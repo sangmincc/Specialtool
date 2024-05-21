@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>울산서비스센터 특수공구</title>
+</head>
+
+<body>
+    <h1>울산서비스센터 특수공구</h1>
+
+    <div>
+        <label for="toolNumber">공구 번호</label>
+        <input type="text" id="toolNumber" name="toolNumber">
+        <button id="searchButton">검색</button>
+    </div>
+
+    <div>
+        <label for="quantity">수량</label>
+        <input type="text" id="quantity" name="quantity" readonly>
+    </div>
+
+    <div>
+        <label for="location">위치</label>
+        <input type="text" id="location" name="location" readonly>
+    </div>
+
+    <div>
+        <label for="share">공유</label>
+        <input type="text" id="share" name="share" readonly>
+    </div>
+
+    <script>
+        // 검색 버튼 클릭 시 CSV 파일을 다시 불러오는 함수를 호출합니다.
+        document.getElementById('searchButton').addEventListener('click', loadCSV);
+
+        // CSV 파일을 처리하는 함수
+        function processCSV(csvData, toolNumber) {
+            var lines = csvData.split('\n');
+            for (var i = 1; i < lines.length; i++) { // 첫 번째 라인은 헤더이므로 1부터 시작합니다.
+                var parts = lines[i].split(',');
+                if (parts[0] === toolNumber) {
+                    document.getElementById('quantity').value = parts[1];
+                    document.getElementById('location').value = parts[2];
+                    document.getElementById('share').value = parts[3];
+                    break;
+                }
+            }
+        }
+
+        // CSV 파일을 가져오고 처리하는 함수
+        function loadCSV() {
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        var csvData = xhr.responseText;
+                        var toolNumber = document.getElementById('toolNumber').value;
+                        processCSV(csvData, toolNumber);
+                    } else {
+                        alert('CSV 파일을 불러오는데 실패했습니다.');
+                    }
+                }
+            };
+            xhr.open('GET', 'C:\Users\sangm\OneDrive\바탕 화면\특수공구어플\html\data.csv', true); // CSV 파일 경로를 적어주세요.
+            xhr.send();
+        }
+
+    </script>
+
+</body>
+
+</html>
